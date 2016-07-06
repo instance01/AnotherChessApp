@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ChessGame.GameObjects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -6,9 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Game1
+namespace ChessGame
 {
-    public class Game1 : Game
+    public class ChessGame : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -34,7 +35,7 @@ namespace Game1
 
         Boolean debug = true;
 
-        public Game1()
+        public ChessGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -135,7 +136,7 @@ namespace Game1
                 if(tempB != null)
                 {
                     raycastBoardTileObject = tempB;
-                    raycastBoardTileObject.pos.Y += 0.5F;
+                    raycastBoardTileObject.position.Y += 0.5F;
                 }
             }
 
@@ -154,7 +155,7 @@ namespace Game1
             {
                 if (raycastBoardTileObject != null)
                 {
-                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastBoardTileObject.pos.X + " Y~" + raycastBoardTileObject.pos.Y + " Z~" + raycastBoardTileObject.pos.Z, new Vector2(10, 30), Color.Black);
+                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastBoardTileObject.position.X + " Y~" + raycastBoardTileObject.position.Y + " Z~" + raycastBoardTileObject.position.Z, new Vector2(10, 30), Color.Black);
                 }
                 spriteBatch.DrawString(font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             }
@@ -167,12 +168,12 @@ namespace Game1
             
             foreach(BoardTileObject obj in boardTiles)
             {
-                obj.draw(this);
+                obj.draw();
             }
 
             foreach(ChessPieceObject obj in chessPieces)
             {
-                obj.draw(this);
+                obj.draw();
             }
 
             base.Draw(gameTime);
@@ -181,12 +182,12 @@ namespace Game1
         protected void CreateBoardTile(Boolean white, Vector3 position)
         {
             Model model = white ? whiteTile : blackTile;
-            boardTiles.Add(new BoardTileObject(model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
+            boardTiles.Add((BoardTileObject) new BoardTileObject(this, model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
         }
 
         protected void CreateChessPiece(Boolean white, Model model, Vector3 position)
         {
-            chessPieces.Add(new ChessPieceObject(model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
+            chessPieces.Add((ChessPieceObject) new ChessPieceObject(this, model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
         }
 
         public Ray FindWhereClicked(MouseState ms)

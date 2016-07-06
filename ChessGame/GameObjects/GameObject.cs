@@ -6,28 +6,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1
+namespace ChessGame.GameObjects
 {
-    class ChessPieceObject
+    class GameObject
     {
+        ChessGame game;
         public Model model;
-        public Vector3 previousPos;
-        public Vector3 pos;
-
-        public Boolean white;
-
+        public Vector3 previousPosition;
+        public Vector3 position;
         public BoundingBox boundingBox;
+        public Texture2D texture;
 
-        public ChessPieceObject(Model model, Vector3 position, Boolean white, BoundingBox box)
+        public GameObject(ChessGame game, Model model, Vector3 position, BoundingBox boundingBox, Texture2D texture)
         {
+            this.game = game;
             this.model = model;
-            this.previousPos = position;
-            this.pos = position;
-            this.white = white;
-            this.boundingBox = box;
+            this.position = position;
+            this.boundingBox = boundingBox;
+            this.texture = texture;
         }
 
-        public ChessPieceObject init()
+        public GameObject init()
         {
             Matrix[] transforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(transforms);
@@ -38,20 +37,20 @@ namespace Game1
                 {
                     effect.EnableDefaultLighting();
                     effect.PreferPerPixelLighting = true;
-                    effect.World = Matrix.CreateTranslation(pos);
+                    effect.World = Matrix.CreateTranslation(position);
                 }
                 //mesh.Draw();
             }
             return this;
         }
 
-        public void draw(Game1 game)
+        public void draw()
         {
             // Update bounding box whenever object has moved
-            if (previousPos != pos)
+            if (previousPosition != position)
             {
-                boundingBox = game.UpdateBoundingBox(model, Matrix.CreateTranslation(pos));
-                previousPos = pos;
+                boundingBox = game.UpdateBoundingBox(model, Matrix.CreateTranslation(position));
+                previousPosition = position;
             }
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -60,15 +59,19 @@ namespace Game1
                     effect.EnableDefaultLighting();
                     effect.PreferPerPixelLighting = true;
 
-                    effect.TextureEnabled = true;
-                    effect.Texture = white ? game.whiteMatteTexture : game.blackMatteTexture;
+                    if(texture != null)
+                    {
+                        effect.TextureEnabled = true;
+                        effect.Texture = texture;
+                    }
 
-                    effect.World = Matrix.CreateTranslation(pos);
+                    effect.World = Matrix.CreateTranslation(position);
                     effect.View = game.viewMatrix;
                     effect.Projection = game.projectionMatrix;
                 }
                 mesh.Draw();
             }
         }
+
     }
 }
