@@ -32,6 +32,8 @@ namespace Game1
         List<BoardTileObject> boardTiles;
         List<ChessPieceObject> chessPieces;
 
+        Boolean debug = true;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -148,13 +150,16 @@ namespace Game1
 
             // Just some debug text messages, will remove later
             spriteBatch.Begin();
-            if (raycastBoardTileObject != null)
+            if (debug)
             {
-                spriteBatch.DrawString(font, "Raycast Object: X~" + raycastBoardTileObject.pos.X + " Y~" + raycastBoardTileObject.pos.Y + " Z~" + raycastBoardTileObject.pos.Z, new Vector2(10, 30), Color.Black);
+                if (raycastBoardTileObject != null)
+                {
+                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastBoardTileObject.pos.X + " Y~" + raycastBoardTileObject.pos.Y + " Z~" + raycastBoardTileObject.pos.Z, new Vector2(10, 30), Color.Black);
+                }
+                spriteBatch.DrawString(font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             }
-            spriteBatch.DrawString(font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             spriteBatch.End();
-            
+
             // Reset GraphicsDevice so the 3d scene works
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
