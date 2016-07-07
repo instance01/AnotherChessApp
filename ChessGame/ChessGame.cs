@@ -18,7 +18,7 @@ namespace ChessGame
 
         Model whiteTile;
         Model blackTile;
-        Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW;
+        Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW, PawnW, TowerB, HorseB1, HorseB2, BishopB, QueenB, KingB, PawnB;
         SpriteFont font;
 
         GameCamera camera;
@@ -27,7 +27,7 @@ namespace ChessGame
         public Matrix projectionMatrix;
 
         Ray raycast;
-        BoardTileObject raycastBoardTileObject;
+        ChessPieceObject raycastChessPieceObject;
 
        
         List<BoardTileObject> boardTiles;
@@ -65,6 +65,14 @@ namespace ChessGame
             BishopW = Content.Load<Model>("BishopW_bauhaus");
             QueenW = Content.Load<Model>("QueenW_bauhaus");
             KingW = Content.Load<Model>("KingW_bauhaus");
+            PawnW = Content.Load<Model>("PawnW_bauhaus");
+            TowerB = Content.Load<Model>("TowerB_bauhaus");
+            HorseB1 = Content.Load<Model>("HorseB1_bauhaus");
+            HorseB2 = Content.Load<Model>("HorseB2_bauhaus");
+            BishopB = Content.Load<Model>("BishopB_bauhaus");
+            QueenB = Content.Load<Model>("QueenB_bauhaus");
+            KingB = Content.Load<Model>("KingB_bauhaus");
+            PawnB = Content.Load<Model>("PawnB_bauhaus");
             font = Content.Load<SpriteFont>("Font");
 
             viewMatrix = Matrix.CreateLookAt(camera.cameraPosition, Vector3.Zero, Vector3.UnitY);
@@ -93,6 +101,22 @@ namespace ChessGame
             CreateChessPiece(true, BishopW, new Vector3(-8, 1, +2));
             CreateChessPiece(true, HorseW2, new Vector3(-8, 1, +4));
             CreateChessPiece(true, TowerW, new Vector3(-8, 1, +6));
+            for(int i = 0; i < 8; i++)
+            {
+                CreateChessPiece(true, PawnW, new Vector3(-6, 1, i * 2 - 8));
+            }
+            CreateChessPiece(false, TowerB, new Vector3(+6, 1, -8));
+            CreateChessPiece(false, HorseB1, new Vector3(+6, 1, -6));
+            CreateChessPiece(false, BishopB, new Vector3(+6, 1, -4));
+            CreateChessPiece(false, QueenB, new Vector3(+6, 1, -2));
+            CreateChessPiece(false, KingB, new Vector3(+6, 1, 0));
+            CreateChessPiece(false, BishopB, new Vector3(+6, 1, +2));
+            CreateChessPiece(false, HorseB2, new Vector3(+6, 1, +4));
+            CreateChessPiece(false, TowerB, new Vector3(+6, 1, +6));
+            for (int i = 0; i < 8; i++)
+            {
+                CreateChessPiece(false, PawnB, new Vector3(+4, 1, i * 2 - 8));
+            }
         }
 
         protected override void UnloadContent()
@@ -111,8 +135,8 @@ namespace ChessGame
             {
                 raycast = FindWhereClicked(Mouse.GetState());
                 float dist = 100F;
-                BoardTileObject tempB = null;
-                foreach(BoardTileObject b in boardTiles)
+                ChessPieceObject tempB = null;
+                foreach(ChessPieceObject b in chessPieces)
                 {
                     BoundingBox box = b.boundingBox;
                     float? f = raycast.Intersects(b.boundingBox);
@@ -127,8 +151,8 @@ namespace ChessGame
                 }
                 if(tempB != null)
                 {
-                    raycastBoardTileObject = tempB;
-                    raycastBoardTileObject.moveDelta(0, 0.5F, 0);
+                    raycastChessPieceObject = tempB;
+                    raycastChessPieceObject.moveDelta(0, 0.5F, 0);
                 }
             }
             if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed)
@@ -136,10 +160,9 @@ namespace ChessGame
                 // move camera while holding left mouse button
                 float dx = previousMouseState.Position.X - currentMouseState.Position.X;
                 //float dy = previousMouseState.Position.Y - currentMouseState.Position.Y;
-                camera.rotateDelta(dx / 60F);
+                camera.rotateDelta(dx / 100F);
                 //camera.moveDelta(0F, dy / 10F, 0F);
             }
-
 
             previousMouseState = currentMouseState;
 
@@ -154,9 +177,9 @@ namespace ChessGame
             spriteBatch.Begin();
             if (debug)
             {
-                if (raycastBoardTileObject != null)
+                if (raycastChessPieceObject != null)
                 {
-                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastBoardTileObject.position.X + " Y~" + raycastBoardTileObject.position.Y + " Z~" + raycastBoardTileObject.position.Z, new Vector2(10, 30), Color.Black);
+                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastChessPieceObject.position.X + " Y~" + raycastChessPieceObject.position.Y + " Z~" + raycastChessPieceObject.position.Z, new Vector2(10, 30), Color.Black);
                 }
                 spriteBatch.DrawString(font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             }
