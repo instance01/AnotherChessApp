@@ -341,3 +341,6 @@
 #begin Textures/white_matte.jpg
 /copy:Textures/white_matte.jpg
 
+#begin helvetica-neue-bold.ttf
+/copy:helvetica-neue-bold.ttf
+

@@ -62,38 +62,38 @@ namespace ChessGame
                 {
                     if ((i + j) % 2 != 0)
                     {
-                        CreateBoardTile(true, new Vector3(i * 2 - 8, 0, j * 2 - 8));
+                        CreateBoardTile(true, new Vector3(i * 2 - 7, 0, j * 2 - 7));
                     }
                     else
                     {
-                        CreateBoardTile(false, new Vector3(i * 2 - 8, 0, j * 2 - 8));
+                        CreateBoardTile(false, new Vector3(i * 2 - 7, 0, j * 2 - 7));
                     }
                 }
             }
 
-            CreateChessPiece(true, content.TowerW, new Vector3(-8, 1, -8));
-            CreateChessPiece(true, content.HorseW1, new Vector3(-8, 1, -6));
-            CreateChessPiece(true, content.BishopW, new Vector3(-8, 1, -4));
-            CreateChessPiece(true, content.QueenW, new Vector3(-8, 1, -2));
-            CreateChessPiece(true, content.KingW, new Vector3(-8, 1, 0));
-            CreateChessPiece(true, content.BishopW, new Vector3(-8, 1, +2));
-            CreateChessPiece(true, content.HorseW2, new Vector3(-8, 1, +4));
-            CreateChessPiece(true, content.TowerW, new Vector3(-8, 1, +6));
+            CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, -7));
+            CreateChessPiece(true, content.HorseW1, new Vector3(-7, 1, -5));
+            CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, -3));
+            CreateChessPiece(true, content.QueenW, new Vector3(-7, 1, -1));
+            CreateChessPiece(true, content.KingW, new Vector3(-7, 1, +1));
+            CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, +3));
+            CreateChessPiece(true, content.HorseW2, new Vector3(-7, 1, +5));
+            CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, +7));
             for(int i = 0; i < 8; i++)
             {
-                CreateChessPiece(true, content.PawnW, new Vector3(-6, 1, i * 2 - 8));
+                CreateChessPiece(true, content.PawnW, new Vector3(-5, 1, i * 2 - 7));
             }
-            CreateChessPiece(false, content.TowerB, new Vector3(+6, 1, -8));
-            CreateChessPiece(false, content.HorseB1, new Vector3(+6, 1, -6));
-            CreateChessPiece(false, content.BishopB, new Vector3(+6, 1, -4));
-            CreateChessPiece(false, content.QueenB, new Vector3(+6, 1, -2));
-            CreateChessPiece(false, content.KingB, new Vector3(+6, 1, 0));
-            CreateChessPiece(false, content.BishopB, new Vector3(+6, 1, +2));
-            CreateChessPiece(false, content.HorseB2, new Vector3(+6, 1, +4));
-            CreateChessPiece(false, content.TowerB, new Vector3(+6, 1, +6));
+            CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, -7));
+            CreateChessPiece(false, content.HorseB1, new Vector3(+7, 1, -5));
+            CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, -3));
+            CreateChessPiece(false, content.QueenB, new Vector3(+7, 1, -1));
+            CreateChessPiece(false, content.KingB, new Vector3(+7, 1, +1));
+            CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, +3));
+            CreateChessPiece(false, content.HorseB2, new Vector3(+7, 1, +5));
+            CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, +7));
             for (int i = 0; i < 8; i++)
             {
-                CreateChessPiece(false, content.PawnB, new Vector3(+4, 1, i * 2 - 8));
+                CreateChessPiece(false, content.PawnB, new Vector3(+5, 1, i * 2 - 7));
             }
 
             scenes.init();
