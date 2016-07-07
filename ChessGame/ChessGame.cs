@@ -14,14 +14,8 @@ namespace ChessGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public Texture2D whiteMatteTexture, blackMatteTexture;
-
-        Model whiteTile;
-        Model blackTile;
-        Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW, PawnW, TowerB, HorseB1, HorseB2, BishopB, QueenB, KingB, PawnB;
-        SpriteFont font;
-
         GameCamera camera;
+        GameContent content;
 
         public Matrix viewMatrix;
         public Matrix projectionMatrix;
@@ -29,7 +23,6 @@ namespace ChessGame
         Ray raycast;
         ChessPieceObject raycastChessPieceObject;
 
-       
         List<BoardTileObject> boardTiles;
         List<ChessPieceObject> chessPieces;
 
@@ -44,6 +37,7 @@ namespace ChessGame
         protected override void Initialize()
         {
             camera = new GameCamera(this);
+            content = new GameContent(this);
             boardTiles = new List<BoardTileObject>();
             chessPieces = new List<ChessPieceObject>();
             this.IsMouseVisible = true;
@@ -54,26 +48,7 @@ namespace ChessGame
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            whiteMatteTexture = Content.Load<Texture2D>("white_matte");
-            blackMatteTexture = Content.Load<Texture2D>("black_matte");
-
-            whiteTile = Content.Load<Model>("whiteTile");
-            blackTile = Content.Load<Model>("blackTile");
-            TowerW = Content.Load<Model>("TowerW_bauhaus");
-            HorseW1 = Content.Load<Model>("HorseW1_bauhaus");
-            HorseW2 = Content.Load<Model>("HorseW2_bauhaus");
-            BishopW = Content.Load<Model>("BishopW_bauhaus");
-            QueenW = Content.Load<Model>("QueenW_bauhaus");
-            KingW = Content.Load<Model>("KingW_bauhaus");
-            PawnW = Content.Load<Model>("PawnW_bauhaus");
-            TowerB = Content.Load<Model>("TowerB_bauhaus");
-            HorseB1 = Content.Load<Model>("HorseB1_bauhaus");
-            HorseB2 = Content.Load<Model>("HorseB2_bauhaus");
-            BishopB = Content.Load<Model>("BishopB_bauhaus");
-            QueenB = Content.Load<Model>("QueenB_bauhaus");
-            KingB = Content.Load<Model>("KingB_bauhaus");
-            PawnB = Content.Load<Model>("PawnB_bauhaus");
-            font = Content.Load<SpriteFont>("Font");
+            content.loadContent();
 
             viewMatrix = Matrix.CreateLookAt(camera.cameraPosition, Vector3.Zero, Vector3.UnitY);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight, 1, 200);
@@ -93,29 +68,29 @@ namespace ChessGame
                 }
             }
 
-            CreateChessPiece(true, TowerW, new Vector3(-8, 1, -8));
-            CreateChessPiece(true, HorseW1, new Vector3(-8, 1, -6));
-            CreateChessPiece(true, BishopW, new Vector3(-8, 1, -4));
-            CreateChessPiece(true, QueenW, new Vector3(-8, 1, -2));
-            CreateChessPiece(true, KingW, new Vector3(-8, 1, 0));
-            CreateChessPiece(true, BishopW, new Vector3(-8, 1, +2));
-            CreateChessPiece(true, HorseW2, new Vector3(-8, 1, +4));
-            CreateChessPiece(true, TowerW, new Vector3(-8, 1, +6));
+            CreateChessPiece(true, content.TowerW, new Vector3(-8, 1, -8));
+            CreateChessPiece(true, content.HorseW1, new Vector3(-8, 1, -6));
+            CreateChessPiece(true, content.BishopW, new Vector3(-8, 1, -4));
+            CreateChessPiece(true, content.QueenW, new Vector3(-8, 1, -2));
+            CreateChessPiece(true, content.KingW, new Vector3(-8, 1, 0));
+            CreateChessPiece(true, content.BishopW, new Vector3(-8, 1, +2));
+            CreateChessPiece(true, content.HorseW2, new Vector3(-8, 1, +4));
+            CreateChessPiece(true, content.TowerW, new Vector3(-8, 1, +6));
             for(int i = 0; i < 8; i++)
             {
-                CreateChessPiece(true, PawnW, new Vector3(-6, 1, i * 2 - 8));
+                CreateChessPiece(true, content.PawnW, new Vector3(-6, 1, i * 2 - 8));
             }
-            CreateChessPiece(false, TowerB, new Vector3(+6, 1, -8));
-            CreateChessPiece(false, HorseB1, new Vector3(+6, 1, -6));
-            CreateChessPiece(false, BishopB, new Vector3(+6, 1, -4));
-            CreateChessPiece(false, QueenB, new Vector3(+6, 1, -2));
-            CreateChessPiece(false, KingB, new Vector3(+6, 1, 0));
-            CreateChessPiece(false, BishopB, new Vector3(+6, 1, +2));
-            CreateChessPiece(false, HorseB2, new Vector3(+6, 1, +4));
-            CreateChessPiece(false, TowerB, new Vector3(+6, 1, +6));
+            CreateChessPiece(false, content.TowerB, new Vector3(+6, 1, -8));
+            CreateChessPiece(false, content.HorseB1, new Vector3(+6, 1, -6));
+            CreateChessPiece(false, content.BishopB, new Vector3(+6, 1, -4));
+            CreateChessPiece(false, content.QueenB, new Vector3(+6, 1, -2));
+            CreateChessPiece(false, content.KingB, new Vector3(+6, 1, 0));
+            CreateChessPiece(false, content.BishopB, new Vector3(+6, 1, +2));
+            CreateChessPiece(false, content.HorseB2, new Vector3(+6, 1, +4));
+            CreateChessPiece(false, content.TowerB, new Vector3(+6, 1, +6));
             for (int i = 0; i < 8; i++)
             {
-                CreateChessPiece(false, PawnB, new Vector3(+4, 1, i * 2 - 8));
+                CreateChessPiece(false, content.PawnB, new Vector3(+4, 1, i * 2 - 8));
             }
         }
 
@@ -172,16 +147,16 @@ namespace ChessGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            
             // Just some debug text messages, will remove later
             spriteBatch.Begin();
             if (debug)
             {
                 if (raycastChessPieceObject != null)
                 {
-                    spriteBatch.DrawString(font, "Raycast Object: X~" + raycastChessPieceObject.position.X + " Y~" + raycastChessPieceObject.position.Y + " Z~" + raycastChessPieceObject.position.Z, new Vector2(10, 30), Color.Black);
+                    spriteBatch.DrawString(content.font, "Raycast Object: X~" + raycastChessPieceObject.position.X + " Y~" + raycastChessPieceObject.position.Y + " Z~" + raycastChessPieceObject.position.Z, new Vector2(10, 30), Color.Black);
                 }
-                spriteBatch.DrawString(font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
+                spriteBatch.DrawString(content.font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             }
             spriteBatch.End();
 
@@ -189,8 +164,8 @@ namespace ChessGame
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-            
-            foreach(BoardTileObject obj in boardTiles)
+
+            foreach (BoardTileObject obj in boardTiles)
             {
                 obj.draw();
             }
@@ -205,7 +180,7 @@ namespace ChessGame
 
         protected void CreateBoardTile(Boolean white, Vector3 position)
         {
-            Model model = white ? whiteTile : blackTile;
+            Model model = white ? content.whiteTile : content.blackTile;
             boardTiles.Add((BoardTileObject) new BoardTileObject(this, model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
         }
 
