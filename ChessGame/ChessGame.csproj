@@ -38,9 +38,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameCamera.cs" />
     <Compile Include="GameObjects\BoardTileObject.cs" />
     <Compile Include="GameObjects\ChessPieceObject.cs" />
-    <Compile Include="Game1.cs" />
+    <Compile Include="ChessGame.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

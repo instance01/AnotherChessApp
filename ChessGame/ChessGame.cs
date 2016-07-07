@@ -21,15 +21,15 @@ namespace ChessGame
         Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW;
         SpriteFont font;
 
-        float camdx, camdy, camdz;
+        GameCamera camera;
+
         public Matrix viewMatrix;
         public Matrix projectionMatrix;
 
         Ray raycast;
         BoardTileObject raycastBoardTileObject;
 
-        Vector3 cameraPosition = new Vector3(-15, 20, 5);
-
+       
         List<BoardTileObject> boardTiles;
         List<ChessPieceObject> chessPieces;
 
@@ -43,9 +43,9 @@ namespace ChessGame
 
         protected override void Initialize()
         {
+            camera = new GameCamera(this);
             boardTiles = new List<BoardTileObject>();
             chessPieces = new List<ChessPieceObject>();
-            camdx = camdz = 1.1F;
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -67,7 +67,7 @@ namespace ChessGame
             KingW = Content.Load<Model>("KingW_bauhaus");
             font = Content.Load<SpriteFont>("Font");
 
-            viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.UnitY);
+            viewMatrix = Matrix.CreateLookAt(camera.cameraPosition, Vector3.Zero, Vector3.UnitY);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight, 1, 200);
 
             for (int i = 0; i < 8; i++)
@@ -82,7 +82,6 @@ namespace ChessGame
                     {
                         CreateBoardTile(false, new Vector3(i * 2 - 8, 0, j * 2 - 8));
                     }
-
                 }
             }
 
@@ -107,15 +106,8 @@ namespace ChessGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO remove camera test again
-            //camdx = (float) Math.Pow(camdx, 1.1D);
-            //camdz = (float) Math.Pow(camdz, 1.1D);
-            camdx += 0.1F;
-            camdz += 0.1F;
-            cameraPosition = new Vector3(-15 + camdx, 20, 5 + camdz);
-            viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.UnitY);
-
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            MouseState currentMouseState = Mouse.GetState();
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
                 raycast = FindWhereClicked(Mouse.GetState());
                 float dist = 100F;
@@ -136,11 +128,20 @@ namespace ChessGame
                 if(tempB != null)
                 {
                     raycastBoardTileObject = tempB;
-                    raycastBoardTileObject.position.Y += 0.5F;
+                    raycastBoardTileObject.moveDelta(0, 0.5F, 0);
                 }
             }
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed)
+            {
+                // move camera while holding left mouse button
+                float dx = previousMouseState.Position.X - currentMouseState.Position.X;
+                //float dy = previousMouseState.Position.Y - currentMouseState.Position.Y;
+                camera.rotateDelta(dx / 60F);
+                //camera.moveDelta(0F, dy / 10F, 0F);
+            }
 
-            previousMouseState = Mouse.GetState();
+
+            previousMouseState = currentMouseState;
 
             base.Update(gameTime);
         }

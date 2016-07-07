@@ -17,6 +17,8 @@ namespace ChessGame.GameObjects
         public BoundingBox boundingBox;
         public Texture2D texture;
 
+        public Matrix worldMatrix;
+
         public GameObject(ChessGame game, Model model, Vector3 position, BoundingBox boundingBox, Texture2D texture)
         {
             this.game = game;
@@ -37,9 +39,9 @@ namespace ChessGame.GameObjects
                 {
                     effect.EnableDefaultLighting();
                     effect.PreferPerPixelLighting = true;
-                    effect.World = Matrix.CreateTranslation(position);
+                    worldMatrix = Matrix.CreateTranslation(position);
+                    effect.World = worldMatrix;
                 }
-                //mesh.Draw();
             }
             return this;
         }
@@ -49,7 +51,7 @@ namespace ChessGame.GameObjects
             // Update bounding box whenever object has moved
             if (previousPosition != position)
             {
-                boundingBox = game.UpdateBoundingBox(model, Matrix.CreateTranslation(position));
+                boundingBox = game.UpdateBoundingBox(model, worldMatrix);
                 previousPosition = position;
             }
             foreach (ModelMesh mesh in model.Meshes)
@@ -65,7 +67,7 @@ namespace ChessGame.GameObjects
                         effect.Texture = texture;
                     }
 
-                    effect.World = Matrix.CreateTranslation(position);
+                    effect.World = worldMatrix;
                     effect.View = game.viewMatrix;
                     effect.Projection = game.projectionMatrix;
                 }
@@ -73,5 +75,10 @@ namespace ChessGame.GameObjects
             }
         }
 
+        public void moveDelta(float dx, float dy, float dz)
+        {
+            position = new Vector3(position.X + dx, position.Y + dy, position.Z + dz);
+            worldMatrix = Matrix.CreateTranslation(position);
+        }
     }
 }
