@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ChessGame.GameObjects
 {
-    class BoardTileObject : GameObject
+    public class BoardTileObject : GameObject
     {
         public Boolean white;
 

@@ -1,4 +1,5 @@
 ﻿using ChessGame.GameObjects;
+using ChessGame.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,11 +12,12 @@ namespace ChessGame
 {
     public class ChessGame : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public GraphicsDeviceManager graphics;
+        public SpriteBatch spriteBatch;
 
         GameCamera camera;
-        GameContent content;
+        public GameContent content;
+        public GameScenes scenes;
 
         public Matrix viewMatrix;
         public Matrix projectionMatrix;
@@ -23,8 +25,8 @@ namespace ChessGame
         Ray raycast;
         ChessPieceObject raycastChessPieceObject;
 
-        List<BoardTileObject> boardTiles;
-        List<ChessPieceObject> chessPieces;
+        public List<BoardTileObject> boardTiles;
+        public List<ChessPieceObject> chessPieces;
 
         Boolean debug = true;
 
@@ -38,6 +40,7 @@ namespace ChessGame
         {
             camera = new GameCamera(this);
             content = new GameContent(this);
+            scenes = new GameScenes(this);
             boardTiles = new List<BoardTileObject>();
             chessPieces = new List<ChessPieceObject>();
             this.IsMouseVisible = true;
@@ -51,7 +54,7 @@ namespace ChessGame
             content.loadContent();
 
             viewMatrix = Matrix.CreateLookAt(camera.cameraPosition, Vector3.Zero, Vector3.UnitY);
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphics.PreferredBackBufferWidth / (float)graphics.PreferredBackBufferHeight, 1, 200);
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphics.PreferredBackBufferWidth / (float) graphics.PreferredBackBufferHeight, 1, 200);
 
             for (int i = 0; i < 8; i++)
             {
@@ -92,6 +95,10 @@ namespace ChessGame
             {
                 CreateChessPiece(false, content.PawnB, new Vector3(+4, 1, i * 2 - 8));
             }
+
+            scenes.init();
+            scenes.mainMenuScene.enabled = true;
+            scenes.ingameScene.enabled = true; // TODO remove
         }
 
         protected override void UnloadContent()
@@ -100,11 +107,22 @@ namespace ChessGame
         }
 
         MouseState previousMouseState = new MouseState();
+        KeyboardState previousKeyboardState = new KeyboardState();
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Keyboard input
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || currentKeyboardState.IsKeyDown(Keys.Escape))
+            {
                 Exit();
+            }
+            if (previousKeyboardState.IsKeyUp(Keys.F3) && currentKeyboardState.IsKeyDown(Keys.F3))
+            {
+                debug = !debug;
+            }
+            previousKeyboardState = currentKeyboardState;
 
+            // Mouse input
             MouseState currentMouseState = Mouse.GetState();
             if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
@@ -134,11 +152,8 @@ namespace ChessGame
             {
                 // move camera while holding left mouse button
                 float dx = previousMouseState.Position.X - currentMouseState.Position.X;
-                //float dy = previousMouseState.Position.Y - currentMouseState.Position.Y;
                 camera.rotateDelta(dx / 100F);
-                //camera.moveDelta(0F, dy / 10F, 0F);
             }
-
             previousMouseState = currentMouseState;
 
             base.Update(gameTime);
@@ -147,8 +162,17 @@ namespace ChessGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
-            // Just some debug text messages, will remove later
+
+            // Reset from 2D so 3D stuff works
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+
+            // Draw 3D stuff
+            scenes.drawScenes3D();
+            base.Draw(gameTime);
+
+            // Draw 2D stuff
             spriteBatch.Begin();
             if (debug)
             {
@@ -158,24 +182,8 @@ namespace ChessGame
                 }
                 spriteBatch.DrawString(content.font, "" + gameTime.ElapsedGameTime.TotalSeconds + " Raycast: X~" + raycast.Direction.X + " Y~" + raycast.Direction.Y + " Z~" + raycast.Direction.Z, new Vector2(10, 10), Color.Black);
             }
+            scenes.drawScenes2D();
             spriteBatch.End();
-
-            // Reset GraphicsDevice so the 3d scene works
-            GraphicsDevice.BlendState = BlendState.Opaque;
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
-
-            foreach (BoardTileObject obj in boardTiles)
-            {
-                obj.draw();
-            }
-
-            foreach(ChessPieceObject obj in chessPieces)
-            {
-                obj.draw();
-            }
-
-            base.Draw(gameTime);
         }
 
         protected void CreateBoardTile(Boolean white, Vector3 position)

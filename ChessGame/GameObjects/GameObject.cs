@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame.GameObjects
 {
-    class GameObject
+    public class GameObject
     {
         ChessGame game;
         public Model model;
@@ -66,6 +66,9 @@ namespace ChessGame.GameObjects
                         effect.TextureEnabled = true;
                         effect.Texture = texture;
                     }
+
+                    // TODO test
+                    effect.SpecularColor = Vector3.One;
 
                     effect.World = worldMatrix;
                     effect.View = game.viewMatrix;

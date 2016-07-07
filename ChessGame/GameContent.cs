@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class GameContent
+    public class GameContent
     {
         ChessGame game;
 
         public Texture2D whiteMatteTexture, blackMatteTexture;
+        public Texture2D buttonHuman_light, buttonHuman_dark, buttonAI_light, buttonAI_dark;
 
         public Model whiteTile;
         public Model blackTile;
         public Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW, PawnW, TowerB, HorseB1, HorseB2, BishopB, QueenB, KingB, PawnB;
-        public SpriteFont font;
+        public SpriteFont font; 
 
         public GameContent(ChessGame game)
         {
@@ -25,8 +26,12 @@ namespace ChessGame
 
         public void loadContent()
         {
-            whiteMatteTexture = game.Content.Load<Texture2D>("white_matte");
-            blackMatteTexture = game.Content.Load<Texture2D>("black_matte");
+            whiteMatteTexture = game.Content.Load<Texture2D>("Textures/white_matte");
+            blackMatteTexture = game.Content.Load<Texture2D>("Textures/black_matte");
+            buttonHuman_light = game.Content.Load<Texture2D>("Textures/buttonHuman_light");
+            buttonHuman_dark = game.Content.Load<Texture2D>("Textures/buttonHuman_dark");
+            buttonAI_light = game.Content.Load<Texture2D>("Textures/buttonAI_light");
+            buttonAI_dark = game.Content.Load<Texture2D>("Textures/buttonAI_dark");
 
             whiteTile = game.Content.Load<Model>("whiteTile");
             blackTile = game.Content.Load<Model>("blackTile");
@@ -46,7 +51,6 @@ namespace ChessGame
             PawnB = game.Content.Load<Model>("PawnB_bauhaus");
             font = game.Content.Load<SpriteFont>("Font");
         }
-
 
     }
 }

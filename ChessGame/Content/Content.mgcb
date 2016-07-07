@@ -114,12 +114,6 @@
 /processorParam:TextureFormat=NoChange
 /build:HorseW2_bauhaus.fbx
 
-#begin white_matte.jpg
-/copy:white_matte.jpg
-
-#begin black_matte.png
-/copy:black_matte.png
-
 #begin TowerW_bauhaus.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -328,4 +322,22 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=DxtCompressed
 /build:BishopB_bauhaus.fbx
+
+#begin Textures/black_matte.png
+/copy:Textures/black_matte.png
+
+#begin Textures/buttonAI_dark.png
+/copy:Textures/buttonAI_dark.png
+
+#begin Textures/buttonAI_light.png
+/copy:Textures/buttonAI_light.png
+
+#begin Textures/buttonHuman_dark.png
+/copy:Textures/buttonHuman_dark.png
+
+#begin Textures/buttonHuman_light.png
+/copy:Textures/buttonHuman_light.png
+
+#begin Textures/white_matte.jpg
+/copy:Textures/white_matte.jpg
 
