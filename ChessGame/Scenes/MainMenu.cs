@@ -21,10 +21,46 @@ namespace ChessGame.Scenes
 
         public override void draw2D()
         {
-            game.spriteBatch.DrawString(game.content.font, "YOU", new Vector2(game.graphics.PreferredBackBufferWidth / 2 - game.content.font.MeasureString("YOU").X / 2, 100), Color.Black);
-            game.spriteBatch.DrawString(game.content.font, "vs", new Vector2(game.graphics.PreferredBackBufferWidth / 2 - game.content.font.MeasureString("vs").X / 2, 120), Color.Black);
+            int width = game.graphics.PreferredBackBufferWidth;
+            int height = game.graphics.PreferredBackBufferHeight;
+            game.spriteBatch.Draw(game.content.transparentRectangle, new Rectangle(0, 0, width, height), Color.Black);
+            game.spriteBatch.DrawString(game.content.font, "YOU", new Vector2(width / 2 - game.content.font.MeasureString("YOU").X / 2, 90), Color.White);
+            game.spriteBatch.DrawString(game.content.font, "vs", new Vector2(width / 2 - game.content.font.MeasureString("vs").X / 2, 110), Color.White);
             humanBtn.draw();
             aiBtn.draw();
+        }
+
+        public void mouseHover(float x, float y, bool click)
+        {
+            if (!enabled)
+            {
+                return;
+            }
+            if(humanBtn.isCoordinateInObject(x, y))
+            {
+                humanBtn.texture = game.content.buttonHuman_light;
+                if (click)
+                {
+                    // TODO multiplayer
+                }
+            } else
+            {
+                humanBtn.texture = game.content.buttonHuman_dark;
+            }
+
+            if (aiBtn.isCoordinateInObject(x, y))
+            {
+                aiBtn.texture = game.content.buttonAI_light;
+                if (click)
+                {
+                    game.scenes.mainMenuScene.enabled = false;
+                    game.scenes.setupVsAIScene.enabled = true;
+                }
+            }
+            else
+            {
+                aiBtn.texture = game.content.buttonAI_dark;
+            }
         }
     }
 }

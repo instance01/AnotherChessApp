@@ -28,5 +28,10 @@ namespace ChessGame.Gui
             game.spriteBatch.Draw(texture, new Rectangle((int) position.X, (int) position.Y, (int) size.X, (int) size.Y), Color.White);
         }
 
+        public virtual Boolean isCoordinateInObject(float x, float y)
+        {
+            return x > position.X && x < position.X + size.X && y > position.Y && y < position.Y + size.Y;
+        }
+
     }
 }

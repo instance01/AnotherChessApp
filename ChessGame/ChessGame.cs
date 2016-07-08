@@ -28,7 +28,7 @@ namespace ChessGame
         public List<BoardTileObject> boardTiles;
         public List<ChessPieceObject> chessPieces;
 
-        Boolean debug = true;
+        Boolean debug = false;
 
         public ChessGame()
         {
@@ -124,9 +124,16 @@ namespace ChessGame
 
             // Mouse input
             MouseState currentMouseState = Mouse.GetState();
-            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
+            bool click = currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released;
+            bool ingame = true;
+            if(scenes.mainMenuScene.enabled || scenes.setupVsAIScene.enabled)
             {
-                raycast = FindWhereClicked(Mouse.GetState());
+                ingame = false;
+                camera.rotateDelta(0.001F);
+            }
+            if (click && ingame)
+            {
+                raycast = FindWhereClicked(currentMouseState);
                 float dist = 100F;
                 ChessPieceObject tempB = null;
                 foreach(ChessPieceObject b in chessPieces)
@@ -148,12 +155,14 @@ namespace ChessGame
                     raycastChessPieceObject.moveDelta(0, 0.5F, 0);
                 }
             }
-            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed)
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed && ingame)
             {
                 // move camera while holding left mouse button
                 float dx = previousMouseState.Position.X - currentMouseState.Position.X;
                 camera.rotateDelta(dx / 100F);
             }
+            scenes.setupVsAIScene.mouseHover(currentMouseState.Position.X, currentMouseState.Position.Y, click);
+            scenes.mainMenuScene.mouseHover(currentMouseState.Position.X, currentMouseState.Position.Y, click);
             previousMouseState = currentMouseState;
 
             base.Update(gameTime);

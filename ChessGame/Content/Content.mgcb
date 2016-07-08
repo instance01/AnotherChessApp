@@ -344,3 +344,12 @@
 #begin helvetica-neue-bold.ttf
 /copy:helvetica-neue-bold.ttf
 
+#begin Textures/buttonStart_light.png
+/copy:Textures/buttonStart_light.png
+
+#begin Textures/select_ai.png
+/copy:Textures/select_ai.png
+
+#begin Textures/buttonStart_dark.png
+/copy:Textures/buttonStart_dark.png
+

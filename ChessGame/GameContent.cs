@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace ChessGame
         ChessGame game;
 
         public Texture2D whiteMatteTexture, blackMatteTexture;
-        public Texture2D buttonHuman_light, buttonHuman_dark, buttonAI_light, buttonAI_dark;
+        public Texture2D buttonHuman_light, buttonHuman_dark, buttonAI_light, buttonAI_dark, buttonStart_dark, buttonStart_light, select_ai;
+        public Texture2D transparentRectangle;
 
         public Model whiteTile;
         public Model blackTile;
@@ -32,6 +34,11 @@ namespace ChessGame
             buttonHuman_dark = game.Content.Load<Texture2D>("Textures/buttonHuman_dark");
             buttonAI_light = game.Content.Load<Texture2D>("Textures/buttonAI_light");
             buttonAI_dark = game.Content.Load<Texture2D>("Textures/buttonAI_dark");
+            buttonStart_dark = game.Content.Load<Texture2D>("Textures/buttonStart_dark");
+            buttonStart_light = game.Content.Load<Texture2D>("Textures/buttonStart_light");
+            select_ai = game.Content.Load<Texture2D>("Textures/select_ai");
+            transparentRectangle = new Texture2D(game.GraphicsDevice, 1, 1);
+            transparentRectangle.SetData(new[] { Color.FromNonPremultiplied(0, 0, 0, 190)});
 
             whiteTile = game.Content.Load<Model>("whiteTile");
             blackTile = game.Content.Load<Model>("blackTile");
