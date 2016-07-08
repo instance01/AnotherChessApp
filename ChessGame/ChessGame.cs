@@ -106,10 +106,12 @@ namespace ChessGame
 
         }
 
+        int count = 0;
         MouseState previousMouseState = new MouseState();
         KeyboardState previousKeyboardState = new KeyboardState();
         protected override void Update(GameTime gameTime)
         {
+            count++;
             // Keyboard input
             KeyboardState currentKeyboardState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || currentKeyboardState.IsKeyDown(Keys.Escape))
@@ -125,39 +127,62 @@ namespace ChessGame
             // Mouse input
             MouseState currentMouseState = Mouse.GetState();
             bool click = currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released;
+            bool clickHold = currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed;
             bool ingame = true;
             if(scenes.mainMenuScene.enabled || scenes.setupVsAIScene.enabled)
             {
                 ingame = false;
                 camera.rotateDelta(0.001F);
             }
-            if (click && ingame)
+            if (currentMouseState.LeftButton == ButtonState.Released && ingame && raycastChessPieceObject != null)
             {
-                raycast = FindWhereClicked(currentMouseState);
-                float dist = 100F;
-                ChessPieceObject tempB = null;
-                foreach(ChessPieceObject b in chessPieces)
+                raycastChessPieceObject.position.Y = 1;
+                raycastChessPieceObject.position.X = (float) (2D * Math.Round((raycastChessPieceObject.position.X + 1) / 2) - 1);
+                raycastChessPieceObject.position.Z = (float) (2D * Math.Round((raycastChessPieceObject.position.Z + 1) / 2) - 1);
+                raycastChessPieceObject.moveTo(raycastChessPieceObject.position);
+                raycastChessPieceObject = null;
+            }
+            if (clickHold && ingame)
+            {
+                if(count % 2 == 1)
                 {
-                    BoundingBox box = b.boundingBox;
-                    float? f = raycast.Intersects(b.boundingBox);
-                    if (f != null)
+                    raycast = FindWhereClicked(currentMouseState);
+                    if(raycastChessPieceObject == null)
                     {
-                        if(f < dist)
+                        float dist = 100F;
+                        ChessPieceObject tempB = null;
+                        foreach (ChessPieceObject b in chessPieces)
                         {
-                            dist = (float) f;
-                            tempB = b;
+                            BoundingBox box = b.boundingBox;
+                            float? f = raycast.Intersects(b.boundingBox);
+                            if (f != null)
+                            {
+                                if (f < dist)
+                                {
+                                    dist = (float)f;
+                                    tempB = b;
+                                }
+                            }
                         }
+                        if (tempB != null)
+                        {
+                            raycastChessPieceObject = tempB;
+                            
+                        }
+                    } else
+                    {
+                        Vector3 position = raycast.Position;
+                        Vector3 direction = raycast.Direction;
+                        float zFactor = -position.Y / direction.Y;
+                        Vector3 zeroWorldPoint = position + direction * zFactor;
+                        zeroWorldPoint.Y += 1;
+                        raycastChessPieceObject.moveTo(zeroWorldPoint);
                     }
                 }
-                if(tempB != null)
-                {
-                    raycastChessPieceObject = tempB;
-                    raycastChessPieceObject.moveDelta(0, 0.5F, 0);
-                }
             }
-            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Pressed && ingame)
+            if (currentMouseState.MiddleButton == ButtonState.Pressed && previousMouseState.MiddleButton == ButtonState.Pressed && ingame)
             {
-                // move camera while holding left mouse button
+                // move camera while holding middle mouse button
                 float dx = previousMouseState.Position.X - currentMouseState.Position.X;
                 camera.rotateDelta(dx / 100F);
             }

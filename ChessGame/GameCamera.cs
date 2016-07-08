@@ -15,7 +15,7 @@ namespace ChessGame
 
         public GameCamera(ChessGame game)
         {
-            cameraPosition = new Vector3(-20, 20, 0);
+            cameraPosition = new Vector3(-16, 24, 0);
             this.game = game;
         }
 

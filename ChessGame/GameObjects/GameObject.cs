@@ -83,5 +83,11 @@ namespace ChessGame.GameObjects
             position = new Vector3(position.X + dx, position.Y + dy, position.Z + dz);
             worldMatrix = Matrix.CreateTranslation(position);
         }
+
+        public void moveTo(Vector3 position)
+        {
+            this.position = position;
+            worldMatrix = Matrix.CreateTranslation(position);
+        }
     }
 }
