@@ -11,10 +11,12 @@ namespace ChessGame.GameObjects
     public class ChessPieceObject : GameObject
     {
         public Boolean white;
+        public String id = "";
 
-        public ChessPieceObject(ChessGame game, Model model, Vector3 position, Boolean white, BoundingBox box) : base(game, model, position, box, white ? game.content.whiteMatteTexture : game.content.blackMatteTexture)
+        public ChessPieceObject(ChessGame game, Model model, Vector3 position, Boolean white, BoundingBox box, String id) : base(game, model, position, box, white ? game.content.whiteMatteTexture : game.content.blackMatteTexture)
         {
             this.white = white;
+            this.id = id;
         }
     }
 }

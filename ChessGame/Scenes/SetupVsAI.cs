@@ -12,11 +12,13 @@ namespace ChessGame.Scenes
     {
         GuiButton selectAiBtn;
         GuiButton startBtn;
+        GuiButton selectColorBtn;
 
         public SetupVsAI(ChessGame game) : base(game)
         {
             selectAiBtn = new GuiButton(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2 - 55, 100), game.content.select_ai, new Vector2(110, 30));
-            startBtn = new GuiButton(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2 - 90, 190), game.content.buttonAI_dark, new Vector2(180, 30));
+            startBtn = new GuiButton(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2 - 90, 220), game.content.buttonAI_dark, new Vector2(180, 30));
+            selectColorBtn = new GuiButton(game, new Vector2(game.graphics.PreferredBackBufferWidth / 2 - 55, 180), game.content.buttonSelectWhite_dark, new Vector2(110, 30));
         }
 
         public override void draw2D()
@@ -25,8 +27,9 @@ namespace ChessGame.Scenes
             int height = game.graphics.PreferredBackBufferHeight;
             game.spriteBatch.Draw(game.content.transparentRectangle, new Rectangle(0, 0, width, height), Color.Black);
             game.spriteBatch.DrawString(game.content.font, "Setup vs AI", new Vector2(width / 2 - game.content.font.MeasureString("Setup vs AI").X / 2, 50), Color.White);
-            game.spriteBatch.DrawString(game.content.font, "Elo", new Vector2(width / 2 - 100, 140), Color.White);
-            game.spriteBatch.DrawString(game.content.font, "Color", new Vector2(width / 2 - 100, 160), Color.White);
+            game.spriteBatch.DrawString(game.content.font, "Elo", new Vector2(width / 2 - 200, 150), Color.White);
+            game.spriteBatch.DrawString(game.content.font, "You're playing as ", new Vector2(width / 2 - 200, 180), Color.White);
+            selectColorBtn.draw();
             selectAiBtn.draw();
             startBtn.draw();
         }
@@ -42,13 +45,40 @@ namespace ChessGame.Scenes
                 startBtn.texture = game.content.buttonStart_light;
                 if (click)
                 {
-                    game.scenes.setupVsAIScene.enabled = false;
-                    game.scenes.ingameScene.enabled = true;
+                    game.startGame();
                 }
             }
             else
             {
                 startBtn.texture = game.content.buttonStart_dark;
+                
+            }
+
+            if(selectColorBtn.isCoordinateInObject(x, y))
+            {
+                if (click)
+                {
+                    game.currentSideWhite = !game.currentSideWhite;
+                    game.currentTurn = !game.currentTurn;
+                }
+                if (game.currentSideWhite)
+                {
+                    selectColorBtn.texture = game.content.buttonSelectWhite_light;
+                }
+                else
+                {
+                    selectColorBtn.texture = game.content.buttonSelectBlack_light;
+                }
+            } else
+            {
+                if (game.currentSideWhite)
+                {
+                    selectColorBtn.texture = game.content.buttonSelectWhite_dark;
+                }
+                else
+                {
+                    selectColorBtn.texture = game.content.buttonSelectBlack_dark;
+                }
             }
         }
     }

@@ -353,3 +353,15 @@
 #begin Textures/buttonStart_dark.png
 /copy:Textures/buttonStart_dark.png
 
+#begin Textures/buttonSelectBlack_light.png
+/copy:Textures/buttonSelectBlack_light.png
+
+#begin Textures/buttonSelectWhite_dark.png
+/copy:Textures/buttonSelectWhite_dark.png
+
+#begin Textures/buttonSelectWhite_light.png
+/copy:Textures/buttonSelectWhite_light.png
+
+#begin Textures/buttonSelectBlack_dark.png
+/copy:Textures/buttonSelectBlack_dark.png
+

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ChessGame
 {
-    class GameCamera
+    public class GameCamera
     {
         ChessGame game;
         public Vector3 cameraPosition;
-        public Boolean moving;
+        float dA = 0F;
 
         public GameCamera(ChessGame game)
         {
@@ -27,7 +27,14 @@ namespace ChessGame
 
         public void rotateDelta(float angle)
         {
+            dA += angle;
             cameraPosition = Vector3.Transform(cameraPosition - Vector3.Zero, Matrix.CreateFromAxisAngle(Vector3.UnitY, angle));
+            game.viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.UnitY);
+        }
+
+        public void resetRotation(float angle)
+        {
+            cameraPosition = Vector3.Transform(cameraPosition - Vector3.Zero, Matrix.CreateFromAxisAngle(Vector3.UnitY, -dA - angle));
             game.viewMatrix = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.UnitY);
         }
 
