@@ -51,7 +51,7 @@ namespace ChessGame.GameObjects
             // Update bounding box whenever object has moved
             if (previousPosition != position)
             {
-                boundingBox = game.UpdateBoundingBox(model, worldMatrix);
+                boundingBox = game.util.UpdateBoundingBox(model, worldMatrix);
                 previousPosition = position;
             }
             foreach (ModelMesh mesh in model.Meshes)

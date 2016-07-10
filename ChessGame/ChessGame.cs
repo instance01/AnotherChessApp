@@ -19,7 +19,8 @@ namespace ChessGame
         public GameCamera camera;
         public GameContent content;
         public GameScenes scenes;
-        ChessUtil chessUtil;
+        public ChessUtil chessUtil;
+        public GameUtil util;
 
         public Matrix viewMatrix;
         public Matrix projectionMatrix;
@@ -55,6 +56,7 @@ namespace ChessGame
             content = new GameContent(this);
             scenes = new GameScenes(this);
             chessUtil = new ChessUtil(this);
+            util = new GameUtil(this);
             boardTiles = new List<BoardTileObject>();
             chessPieces = new List<ChessPieceObject>();
             this.IsMouseVisible = true;
@@ -76,38 +78,38 @@ namespace ChessGame
                 {
                     if ((i + j) % 2 != 0)
                     {
-                        CreateBoardTile(true, new Vector3(i * 2 - 7, 0, j * 2 - 7));
+                        util.CreateBoardTile(true, new Vector3(i * 2 - 7, 0, j * 2 - 7));
                     }
                     else
                     {
-                        CreateBoardTile(false, new Vector3(i * 2 - 7, 0, j * 2 - 7));
+                        util.CreateBoardTile(false, new Vector3(i * 2 - 7, 0, j * 2 - 7));
                     }
                 }
             }
 
-            CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, -7), "T");
-            CreateChessPiece(true, content.HorseW1, new Vector3(-7, 1, -5), "H");
-            CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, -3), "B");
-            CreateChessPiece(true, content.QueenW, new Vector3(-7, 1, -1), "Q");
-            kingW = CreateChessPiece(true, content.KingW, new Vector3(-7, 1, +1), "K");
-            CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, +3), "B");
-            CreateChessPiece(true, content.HorseW2, new Vector3(-7, 1, +5), "H");
-            CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, +7), "T");
+            util.CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, -7), "T");
+            util.CreateChessPiece(true, content.HorseW1, new Vector3(-7, 1, -5), "H");
+            util.CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, -3), "B");
+            util.CreateChessPiece(true, content.QueenW, new Vector3(-7, 1, -1), "Q");
+            kingW = util.CreateChessPiece(true, content.KingW, new Vector3(-7, 1, +1), "K");
+            util.CreateChessPiece(true, content.BishopW, new Vector3(-7, 1, +3), "B");
+            util.CreateChessPiece(true, content.HorseW2, new Vector3(-7, 1, +5), "H");
+            util.CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, +7), "T");
             for(int i = 0; i < 8; i++)
             {
-                CreateChessPiece(true, content.PawnW, new Vector3(-5, 1, i * 2 - 7), "P");
+                util.CreateChessPiece(true, content.PawnW, new Vector3(-5, 1, i * 2 - 7), "P");
             }
-            CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, -7), "T");
-            CreateChessPiece(false, content.HorseB1, new Vector3(+7, 1, -5), "H");
-            CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, -3), "B");
-            CreateChessPiece(false, content.QueenB, new Vector3(+7, 1, -1), "Q");
-            kingB = CreateChessPiece(false, content.KingB, new Vector3(+7, 1, +1), "K");
-            CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, +3), "B");
-            CreateChessPiece(false, content.HorseB2, new Vector3(+7, 1, +5), "H");
-            CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, +7), "T");
+            util.CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, -7), "T");
+            util.CreateChessPiece(false, content.HorseB1, new Vector3(+7, 1, -5), "H");
+            util.CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, -3), "B");
+            util.CreateChessPiece(false, content.QueenB, new Vector3(+7, 1, -1), "Q");
+            kingB = util.CreateChessPiece(false, content.KingB, new Vector3(+7, 1, +1), "K");
+            util.CreateChessPiece(false, content.BishopB, new Vector3(+7, 1, +3), "B");
+            util.CreateChessPiece(false, content.HorseB2, new Vector3(+7, 1, +5), "H");
+            util.CreateChessPiece(false, content.TowerB, new Vector3(+7, 1, +7), "T");
             for (int i = 0; i < 8; i++)
             {
-                CreateChessPiece(false, content.PawnB, new Vector3(+5, 1, i * 2 - 7), "P");
+                util.CreateChessPiece(false, content.PawnB, new Vector3(+5, 1, i * 2 - 7), "P");
             }
 
             scenes.init();
@@ -179,7 +181,7 @@ namespace ChessGame
             {
                 if(count % 2 == 1)
                 {
-                    raycast = FindWhereClicked(currentMouseState);
+                    raycast = util.FindWhereClicked(currentMouseState);
                     if(raycastChessPieceObject == null)
                     {
                         float dist = 100F;
@@ -264,59 +266,6 @@ namespace ChessGame
             scenes.ingameScene.enabled = true;
             camera.resetRotation(currentSideWhite ? 0F : (float)Math.PI);
             // TODO start up UCIWrapper
-        }
-
-        protected void CreateBoardTile(Boolean white, Vector3 position)
-        {
-            Model model = white ? content.whiteTile : content.blackTile;
-            boardTiles.Add((BoardTileObject) new BoardTileObject(this, model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position))).init());
-        }
-
-        protected ChessPieceObject CreateChessPiece(Boolean white, Model model, Vector3 position, String id)
-        {
-            ChessPieceObject obj = (ChessPieceObject) new ChessPieceObject(this, model, position, white, UpdateBoundingBox(model, Matrix.CreateTranslation(position)), id).init();
-            chessPieces.Add(obj);
-            return obj;
-        }
-
-        public Ray FindWhereClicked(MouseState ms)
-        {
-            Vector3 nearScreenPoint = new Vector3(ms.X, ms.Y, 0);
-            Vector3 farScreenPoint = new Vector3(ms.X, ms.Y, 1);
-            Vector3 nearWorldPoint = GraphicsDevice.Viewport.Unproject(nearScreenPoint, projectionMatrix, viewMatrix, Matrix.Identity);
-            Vector3 farWorldPoint = GraphicsDevice.Viewport.Unproject(farScreenPoint, projectionMatrix, viewMatrix, Matrix.Identity);
-
-            Vector3 direction = farWorldPoint - nearWorldPoint;
-            direction.Normalize();
-
-            return new Ray(nearWorldPoint, direction);
-        }
-
-        // http://gamedev.stackexchange.com/questions/2438/how-do-i-create-bounding-boxes-with-xna-4-0
-        public BoundingBox UpdateBoundingBox(Model model, Matrix worldTransform)
-        {
-            Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart meshPart in mesh.MeshParts)
-                {
-                    int vertexStride = meshPart.VertexBuffer.VertexDeclaration.VertexStride;
-                    int vertexBufferSize = meshPart.NumVertices * vertexStride;
-                    float[] vertexData = new float[vertexBufferSize / sizeof(float)];
-                    meshPart.VertexBuffer.GetData<float>(vertexData);
-
-                    for (int i = 0; i < vertexBufferSize / sizeof(float); i += vertexStride / sizeof(float))
-                    {
-                        Vector3 transformedPosition = Vector3.Transform(new Vector3(vertexData[i], vertexData[i + 1], vertexData[i + 2]), worldTransform);
-                        min = Vector3.Min(min, transformedPosition);
-                        max = Vector3.Max(max, transformedPosition);
-                    }
-                }
-            }
-
-            return new BoundingBox(min, max);
         }
 
         

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame.Util
 {
-    class ChessUtil
+    public class ChessUtil
     {
         ChessGame game;
         public ChessUtil(ChessGame game)

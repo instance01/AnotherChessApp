@@ -54,6 +54,8 @@
     <Compile Include="Scenes\MainMenu.cs" />
     <Compile Include="Scenes\Ingame.cs" />
     <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Util\ChessUtil.cs" />
+    <Compile Include="Util\GameUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
