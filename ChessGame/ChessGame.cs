@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UCIWrapper;
 
 namespace ChessGame
 {
@@ -15,6 +16,8 @@ namespace ChessGame
     {
         public GraphicsDeviceManager graphics;
         public SpriteBatch spriteBatch;
+
+        Wrapper uciwrapper;
 
         public GameCamera camera;
         public GameContent content;
@@ -35,11 +38,12 @@ namespace ChessGame
         Boolean debug = false;
 
         public string[] xCoords = new string[8] { "1", "2", "3", "4", "5", "6", "7", "8" };
-        public string[] zCoords = new string[8] { "A", "B", "C", "D", "E", "F", "G", "H" };
+        public string[] zCoords = new string[8] { "a", "b", "c", "d", "e", "f", "g", "h" };
         public string currentMove = "";
         public string currentCoord = "";
         public bool currentSideWhite = true;
         public bool currentTurn = true;
+        public string allMoves = "";
 
         public ChessPieceObject kingW;
         public ChessPieceObject kingB;
@@ -52,6 +56,7 @@ namespace ChessGame
 
         protected override void Initialize()
         {
+            uciwrapper = new Wrapper("stockfish 7 x64.exe");
             camera = new GameCamera(this);
             content = new GameContent(this);
             scenes = new GameScenes(this);
@@ -153,7 +158,6 @@ namespace ChessGame
             }
             if (currentMouseState.LeftButton == ButtonState.Released && ingame && raycastChessPieceObject != null)
             {
-                // TODO inaccurate coordinates lead to buggy behaviour -> very hard to place down chess piece
                 float y = 1;
                 float x = (float) (2D * Math.Round((raycastChessPieceObject.position.X + 1) / 2) - 1);
                 float z = (float) (2D * Math.Round((raycastChessPieceObject.position.Z + 1) / 2) - 1);
@@ -166,7 +170,6 @@ namespace ChessGame
                     currentMove = currentCoord + coord;
                     string temp = currentCoord;
                     currentCoord = coord;
-                    // TODO uncomment
                     if(!chessUtil.isValidMove(raycastChessPieceObject, new Vector3(x, y, z), currentMove, raycastChessPieceObject.white))
                     {
                         raycastChessPieceObject.moveTo(raycastPreviousLocation);
@@ -174,6 +177,9 @@ namespace ChessGame
                     } else
                     {
                         currentSideWhite = !currentSideWhite;
+                        allMoves = allMoves.Length < 1 ? currentMove : (allMoves + " " + currentMove);
+                        uciwrapper.sendUCICommand("position startpos moves " + allMoves);
+                        uciwrapper.sendUCICommand("go");
                     }
                 }
                 raycastChessPieceObject = null;
@@ -266,9 +272,44 @@ namespace ChessGame
             scenes.setupVsAIScene.enabled = false;
             scenes.ingameScene.enabled = true;
             camera.resetRotation(currentSideWhite ? 0F : (float)Math.PI);
-            // TODO start up UCIWrapper
+            uciwrapper.startEngine();
+            uciwrapper.OnNewMoveEvent += new Wrapper.NewMoveEventHandler(newMoveEvent);
+            uciwrapper.OnNewEvent += new Wrapper.NewEventHandler(newEvent);
+            uciwrapper.sendUCICommand("uci");
+            if(!currentSideWhite && !currentTurn)
+            {
+                uciwrapper.sendUCICommand("go");
+            }
         }
 
-        
+        private void newMoveEvent(object sender, Wrapper.MoveEventArgs e)
+        {
+            string move = e.Move.Substring(0, 4);
+            allMoves = allMoves.Length < 1 ? move : (allMoves + " " + move);
+
+            string originChar = move.Substring(0, 1);
+            string originNum = move.Substring(1, 1);
+            string destinationChar = move.Substring(2, 1);
+            string destinationNum = move.Substring(3, 1);
+            int originX = Array.IndexOf(xCoords, originNum);
+            int destinationX = Array.IndexOf(xCoords, destinationNum);
+            int originY = Array.IndexOf(zCoords, originChar);
+            int destinationY = Array.IndexOf(zCoords, destinationChar);
+
+            Console.WriteLine(move);
+
+            ChessPieceObject obj = chessUtil.getFigure(originY, originX);
+            int x = 2 * (destinationX - 3) - 1;
+            int z = 2 * (destinationY - 3) - 1;
+            obj.moveTo(new Vector3(x, 1, z));
+
+            currentSideWhite = !currentSideWhite;
+        }
+
+        private void newEvent(object sender, Wrapper.NewEventArgs e)
+        {
+            Console.WriteLine(e.Line);
+        }
+
     }
 }

@@ -340,7 +340,6 @@ namespace ChessGame.Util
                 {
                     int y = (int)((obj.position.X + 1) / 2 + 3);
                     int x = (int)((obj.position.Z + 1) / 2 + 3);
-                    Console.WriteLine(white + " " + fieldX + " " + fieldY + " " + x + " " + y);
                     if (isValidMoveInternal(obj.id, y, x, fieldY, fieldX, !white))
                     {
                         return true;
