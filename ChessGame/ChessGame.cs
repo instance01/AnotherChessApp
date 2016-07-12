@@ -26,7 +26,7 @@ namespace ChessGame
         public Matrix projectionMatrix;
 
         Ray raycast;
-        ChessPieceObject raycastChessPieceObject;
+        public ChessPieceObject raycastChessPieceObject;
         Vector3 raycastPreviousLocation;
 
         public List<BoardTileObject> boardTiles;
@@ -162,10 +162,11 @@ namespace ChessGame
                     raycastChessPieceObject.moveTo(raycastPreviousLocation);
                 } else
                 {
-                    string coord = zCoords[((int)z + 1) / 2 + 3] + xCoords[((int)x + 1) / 2 + 3]; ;
+                    string coord = zCoords[((int)z + 1) / 2 + 3] + xCoords[((int)x + 1) / 2 + 3];
                     currentMove = currentCoord + coord;
                     string temp = currentCoord;
                     currentCoord = coord;
+                    // TODO uncomment
                     if(!chessUtil.isValidMove(raycastChessPieceObject, new Vector3(x, y, z), currentMove, raycastChessPieceObject.white))
                     {
                         raycastChessPieceObject.moveTo(raycastPreviousLocation);

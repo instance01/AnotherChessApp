@@ -86,11 +86,49 @@ namespace ChessGame.Util
             {
                 int yvec = Math.Abs(originY - destinationY);
                 int xvec = Math.Abs(originX - destinationX);
+                Console.WriteLine(white + " " + yvec + " " + xvec + " " + destinationX + " " + destinationY);
+                // OO
+                if(yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 6)
+                {
+                    if(hasFigure(7, destinationX, true, !white, "T")){
+                        if(!isFieldAttacked(destinationY - 1, destinationX, white) && !isFieldAttacked(destinationY - 2, destinationX, white))
+                        {
+                            if (!isFigureBetween(originX, originY, destinationX, destinationY))
+                            {
+                                ChessPieceObject obj = getFigure(destinationY + 1, destinationX);
+                                int x = 2 * (destinationX - 3) - 1;
+                                int z = 3;
+                                obj.moveTo(new Vector3(x, 1, z));
+                                game.currentCoord = "OO";
+                                return true;
+                            }
+                        }
+                    }
+                }
+                // OOO
+                if (yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 2)
+                {
+                    if (hasFigure(0, destinationX, true, !white, "T"))
+                    {
+                        if (!isFieldAttacked(destinationY + 1, destinationX, white) && !isFieldAttacked(destinationY - 1, destinationX, white))
+                        {
+                            if (!isFigureBetween(originX, originY, destinationX, destinationY) && !hasFigure(1, destinationX))
+                            {
+                                ChessPieceObject obj = getFigure(0, destinationX);
+                                int x = 2 * (destinationX - 3) - 1;
+                                int z = -1;
+                                obj.moveTo(new Vector3(x, 1, z));
+                                game.currentCoord = "OOO";
+                                return true;
+                            }
+                        }
+                    }
+                }
+
                 if (yvec <= 1 && xvec <= 1)
                 {
                     return true;
                 }
-                // TODO castle
             }
             else if (id == "P")
             {
@@ -197,10 +235,18 @@ namespace ChessGame.Util
             return false;
         }
 
-        public bool hasFigure(int ccX, int ccY, bool checkForColor = false, bool white = false)
+        public bool hasFigure(int ccX, int ccY, bool checkForColor = false, bool white = false, string id = "")
         {
+            bool hasId = id != "";
             foreach (ChessPieceObject obj in game.chessPieces)
             {
+                if (hasId)
+                {
+                    if (obj.id != id)
+                    {
+                        continue;
+                    }
+                }
                 if (checkForColor)
                 {
                     if (obj.white == white)
@@ -208,16 +254,38 @@ namespace ChessGame.Util
                         continue;
                     }
                 }
+                if(obj == game.raycastChessPieceObject)
+                {
+                    continue;
+                }
                 int x = (int)((obj.position.X + 1) / 2 + 3);
                 int y = (int)((obj.position.Z + 1) / 2 + 3);
-                //Console.WriteLine(white + " " + obj.position.X + " " + obj.position.Z);
-                //Console.WriteLine(">>> " + ccX + " " + ccY + " = " + x + " " + y);
+                if (checkForColor)
+                {
+                    //Console.WriteLine(white + " " + obj.position.X + " " + obj.position.Z);
+                    //Console.WriteLine(">>> " + ccX + " " + ccY + " = " + x + " " + y);
+                }
+
                 if (ccY == x && ccX == y)
                 {
                     return true;
                 }
             }
             return false;
+        }
+
+        public ChessPieceObject getFigure(int ccX, int ccY)
+        {
+            foreach (ChessPieceObject obj in game.chessPieces)
+            {
+                int x = (int)((obj.position.X + 1) / 2 + 3);
+                int y = (int)((obj.position.Z + 1) / 2 + 3);
+                if (ccY == x && ccX == y)
+                {
+                    return obj;
+                }
+            }
+            return null;
         }
 
         public bool checkBishop(int originX, int originY, int destinationX, int destinationY)
@@ -255,6 +323,25 @@ namespace ChessGame.Util
                     int y = (int)((obj.position.X + 1) / 2 + 3);
                     int x = (int)((obj.position.Z + 1) / 2 + 3);
                     if (isValidMoveInternal(obj.id, y, x, kingY, kingX, !white))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool isFieldAttacked(int fieldX, int fieldY, bool white)
+        {
+            foreach (ChessPieceObject obj in game.chessPieces)
+            {
+                if (obj.white != white)
+                {
+                    int y = (int)((obj.position.X + 1) / 2 + 3);
+                    int x = (int)((obj.position.Z + 1) / 2 + 3);
+                    Console.WriteLine(white + " " + fieldX + " " + fieldY + " " + x + " " + y);
+                    if (isValidMoveInternal(obj.id, y, x, fieldY, fieldX, !white))
                     {
                         return true;
                     }
