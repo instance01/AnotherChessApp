@@ -16,13 +16,19 @@ namespace ChessGame.Util
             this.game = game;
         }
 
-        public bool isValidMove(ChessPieceObject obj, Vector3 position, string move, bool white)
+        ChessPieceObject temp;
+        public bool isValidMove(ChessPieceObject obj, Vector3 position, string move)
         {
-            if (isValidMoveInternal(obj.id, move, white))
+            if (isValidMoveInternal(obj.id, move, obj.white))
             {
                 obj.moveTo(position);
-                if (!isKingAttacked(obj, white))
+                if (!isKingAttacked(obj, obj.white))
                 {
+                    if(temp != null)
+                    {
+                        game.chessPieces.Remove(temp);
+                        temp = null;
+                    }
                     return true;
                 }
             }
@@ -40,8 +46,8 @@ namespace ChessGame.Util
             int originY = Array.IndexOf(game.zCoords, originChar);
             int destinationY = Array.IndexOf(game.zCoords, destinationChar);
 
-            Console.WriteLine(move + " " + originX + " " + originY + " " + destinationX + " " + destinationY);
-
+            temp = getFigure(destinationY, destinationX, true, white);
+            
             return isValidMoveInternal(id, originX, originY, destinationX, destinationY, white);
         }
 
@@ -52,7 +58,7 @@ namespace ChessGame.Util
             {
                 return false;
             }
-            if (hasFigure(destinationY, destinationX, true, !white))
+            if (hasFigure(destinationY, destinationX, true, true, !white))
             {
                 return false;
             }
@@ -86,11 +92,10 @@ namespace ChessGame.Util
             {
                 int yvec = Math.Abs(originY - destinationY);
                 int xvec = Math.Abs(originX - destinationX);
-                Console.WriteLine(white + " " + yvec + " " + xvec + " " + destinationX + " " + destinationY);
                 // OO
                 if(yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 6)
                 {
-                    if(hasFigure(7, destinationX, true, !white, "T")){
+                    if(hasFigure(7, destinationX, true, true, !white, "T")){
                         if(!isFieldAttacked(destinationY - 1, destinationX, white) && !isFieldAttacked(destinationY - 2, destinationX, white))
                         {
                             if (!isFigureBetween(originX, originY, destinationX, destinationY))
@@ -108,7 +113,7 @@ namespace ChessGame.Util
                 // OOO
                 if (yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 2)
                 {
-                    if (hasFigure(0, destinationX, true, !white, "T"))
+                    if (hasFigure(0, destinationX, true, true, !white, "T"))
                     {
                         if (!isFieldAttacked(destinationY + 1, destinationX, white) && !isFieldAttacked(destinationY - 1, destinationX, white))
                         {
@@ -148,7 +153,6 @@ namespace ChessGame.Util
                 }
                 int xdist = Math.Abs(destinationY - originY);
                 int ydist = Math.Abs(destinationX - originX);
-                //Console.WriteLine("#####" + white + " " + ydist + " " + xdist);
                 if (((white && originX == 1) || (!white && originX == 6)) && ydist == 2)
                 {
                     return !isFigureBetween(originX, originY, destinationX, destinationY) && !hasFigure(destinationY, destinationX);
@@ -157,7 +161,7 @@ namespace ChessGame.Util
                 {
                     return true;
                 }
-                if (xdist == 1 && ydist == 1 && hasFigure(destinationY, destinationX, true, white))
+                if (xdist == 1 && ydist == 1 && hasFigure(destinationY, destinationX, true, true, white))
                 {
                     return true;
                 }
@@ -215,7 +219,7 @@ namespace ChessGame.Util
                     {
                         if (xvec_ == xvec || yvec_ == yvec)
                         {
-                            if (hasFigure(ccx, ccy))
+                            if (hasFigure(ccx, ccy, false))
                             {
                                 return true;
                             }
@@ -224,7 +228,7 @@ namespace ChessGame.Util
                     }
                     if (xyvec == xyvec_)
                     {
-                        if (hasFigure(ccx, ccy))
+                        if (hasFigure(ccx, ccy, false))
                         {
                             return true;
                         }
@@ -235,7 +239,7 @@ namespace ChessGame.Util
             return false;
         }
 
-        public bool hasFigure(int ccX, int ccY, bool checkForColor = false, bool white = false, string id = "")
+        public bool hasFigure(int ccX, int ccY, bool raycastCheck = true, bool checkForColor = false, bool white = false, string id = "")
         {
             bool hasId = id != "";
             foreach (ChessPieceObject obj in game.chessPieces)
@@ -254,18 +258,15 @@ namespace ChessGame.Util
                         continue;
                     }
                 }
-                if(obj == game.raycastChessPieceObject)
+                if (raycastCheck)
                 {
-                    continue;
+                    if (obj == game.raycastChessPieceObject)
+                    {
+                        continue;
+                    }
                 }
                 int x = (int)((obj.position.X + 1) / 2 + 3);
                 int y = (int)((obj.position.Z + 1) / 2 + 3);
-                if (checkForColor)
-                {
-                    //Console.WriteLine(white + " " + obj.position.X + " " + obj.position.Z);
-                    //Console.WriteLine(">>> " + ccX + " " + ccY + " = " + x + " " + y);
-                }
-
                 if (ccY == x && ccX == y)
                 {
                     return true;
@@ -274,10 +275,17 @@ namespace ChessGame.Util
             return false;
         }
 
-        public ChessPieceObject getFigure(int ccX, int ccY)
+        public ChessPieceObject getFigure(int ccX, int ccY, bool checkForColor = false, bool white = false)
         {
             foreach (ChessPieceObject obj in game.chessPieces)
             {
+                if (checkForColor)
+                {
+                    if (obj.white == white)
+                    {
+                        continue;
+                    }
+                }
                 int x = (int)((obj.position.X + 1) / 2 + 3);
                 int y = (int)((obj.position.Z + 1) / 2 + 3);
                 if (ccY == x && ccX == y)

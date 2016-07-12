@@ -170,7 +170,7 @@ namespace ChessGame
                     currentMove = currentCoord + coord;
                     string temp = currentCoord;
                     currentCoord = coord;
-                    if(!chessUtil.isValidMove(raycastChessPieceObject, new Vector3(x, y, z), currentMove, raycastChessPieceObject.white))
+                    if(!chessUtil.isValidMove(raycastChessPieceObject, new Vector3(x, y, z), currentMove))
                     {
                         raycastChessPieceObject.moveTo(raycastPreviousLocation);
                         currentCoord = temp;
@@ -276,6 +276,7 @@ namespace ChessGame
             uciwrapper.OnNewMoveEvent += new Wrapper.NewMoveEventHandler(newMoveEvent);
             uciwrapper.OnNewEvent += new Wrapper.NewEventHandler(newEvent);
             uciwrapper.sendUCICommand("uci");
+            uciwrapper.sendUCICommand("setoption name Skill Level 2"); // 2 is 1420 elo according to LiChess, setting purposely so low to test out whether that works
             if(!currentSideWhite && !currentTurn)
             {
                 uciwrapper.sendUCICommand("go");
@@ -296,7 +297,14 @@ namespace ChessGame
             int originY = Array.IndexOf(zCoords, originChar);
             int destinationY = Array.IndexOf(zCoords, destinationChar);
 
-            Console.WriteLine(move);
+            Console.WriteLine("newMoveEvent " + move + " " + originX + " " + originY);
+
+            ChessPieceObject obj_ = chessUtil.getFigure(destinationY, destinationX);
+            if (obj_ != null)
+            {
+                Console.WriteLine(">>>>>" + obj_.white);
+                chessPieces.Remove(obj_);
+            }
 
             ChessPieceObject obj = chessUtil.getFigure(originY, originX);
             int x = 2 * (destinationX - 3) - 1;
@@ -308,7 +316,7 @@ namespace ChessGame
 
         private void newEvent(object sender, Wrapper.NewEventArgs e)
         {
-            Console.WriteLine(e.Line);
+            // Console.WriteLine(e.Line);
         }
 
     }
