@@ -21,9 +21,16 @@ namespace ChessGame.Scenes
                 obj.draw();
             }
 
-            foreach (ChessPieceObject obj in game.chessPieces)
+            for (int i = 0; i < game.chessPieces.Count; i++)
             {
-                obj.draw();
+                if (i < game.chessPieces.Count)
+                {
+                    ChessPieceObject obj = game.chessPieces[i];
+                    if (obj != null)
+                    {
+                        obj.draw();
+                    }
+                }
             }
         }
     }

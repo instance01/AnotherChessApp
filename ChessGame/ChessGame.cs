@@ -276,7 +276,7 @@ namespace ChessGame
             uciwrapper.OnNewMoveEvent += new Wrapper.NewMoveEventHandler(newMoveEvent);
             uciwrapper.OnNewEvent += new Wrapper.NewEventHandler(newEvent);
             uciwrapper.sendUCICommand("uci");
-            uciwrapper.sendUCICommand("setoption name Skill Level 2"); // 2 is 1420 elo according to LiChess, setting purposely so low to test out whether that works
+            uciwrapper.sendUCICommand("setoption name Skill Level value 1"); // 2 is 1420 elo according to LiChess, setting purposely so low to test out whether that works
             if(!currentSideWhite && !currentTurn)
             {
                 uciwrapper.sendUCICommand("go");
@@ -297,26 +297,35 @@ namespace ChessGame
             int originY = Array.IndexOf(zCoords, originChar);
             int destinationY = Array.IndexOf(zCoords, destinationChar);
 
-            Console.WriteLine("newMoveEvent " + move + " " + originX + " " + originY);
-
             ChessPieceObject obj_ = chessUtil.getFigure(destinationY, destinationX);
             if (obj_ != null)
             {
-                Console.WriteLine(">>>>>" + obj_.white);
                 chessPieces.Remove(obj_);
             }
 
             ChessPieceObject obj = chessUtil.getFigure(originY, originX);
-            int x = 2 * (destinationX - 3) - 1;
-            int z = 2 * (destinationY - 3) - 1;
-            obj.moveTo(new Vector3(x, 1, z));
+            if(obj != null)
+            {
+                if (obj.id == "K")
+                {
+                    bool castle = chessUtil.castle(originX, originY, destinationX, destinationY, obj.white);
+                    Console.WriteLine(" > " + castle);
+                }
+                int x = 2 * (destinationX - 3) - 1;
+                int z = 2 * (destinationY - 3) - 1;
+                obj.moveTo(new Vector3(x, 1, z));
+
+            } else
+            {
+                Console.WriteLine("Something just broke");
+            }
 
             currentSideWhite = !currentSideWhite;
         }
 
         private void newEvent(object sender, Wrapper.NewEventArgs e)
         {
-            // Console.WriteLine(e.Line);
+            Console.WriteLine(e.Line);
         }
 
     }

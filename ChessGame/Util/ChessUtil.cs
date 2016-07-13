@@ -22,14 +22,20 @@ namespace ChessGame.Util
             if (isValidMoveInternal(obj.id, move, obj.white))
             {
                 obj.moveTo(position);
+                if(temp != null)
+                {
+                    game.chessPieces.Remove(temp);
+                }
                 if (!isKingAttacked(obj, obj.white))
+                {
+                    temp = null;
+                    return true;
+                } else
                 {
                     if(temp != null)
                     {
-                        game.chessPieces.Remove(temp);
-                        temp = null;
+                        game.chessPieces.Add(temp);
                     }
-                    return true;
                 }
             }
             return false;
@@ -47,7 +53,7 @@ namespace ChessGame.Util
             int destinationY = Array.IndexOf(game.zCoords, destinationChar);
 
             temp = getFigure(destinationY, destinationX, true, white);
-            
+
             return isValidMoveInternal(id, originX, originY, destinationX, destinationY, white);
         }
 
@@ -92,48 +98,11 @@ namespace ChessGame.Util
             {
                 int yvec = Math.Abs(originY - destinationY);
                 int xvec = Math.Abs(originX - destinationX);
-                // OO
-                if(yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 6)
-                {
-                    if(hasFigure(7, destinationX, true, true, !white, "T")){
-                        if(!isFieldAttacked(destinationY - 1, destinationX, white) && !isFieldAttacked(destinationY - 2, destinationX, white))
-                        {
-                            if (!isFigureBetween(originX, originY, destinationX, destinationY))
-                            {
-                                ChessPieceObject obj = getFigure(destinationY + 1, destinationX);
-                                int x = 2 * (destinationX - 3) - 1;
-                                int z = 3;
-                                obj.moveTo(new Vector3(x, 1, z));
-                                game.currentCoord = "OO";
-                                return true;
-                            }
-                        }
-                    }
-                }
-                // OOO
-                if (yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 2)
-                {
-                    if (hasFigure(0, destinationX, true, true, !white, "T"))
-                    {
-                        if (!isFieldAttacked(destinationY + 1, destinationX, white) && !isFieldAttacked(destinationY - 1, destinationX, white))
-                        {
-                            if (!isFigureBetween(originX, originY, destinationX, destinationY) && !hasFigure(1, destinationX))
-                            {
-                                ChessPieceObject obj = getFigure(0, destinationX);
-                                int x = 2 * (destinationX - 3) - 1;
-                                int z = -1;
-                                obj.moveTo(new Vector3(x, 1, z));
-                                game.currentCoord = "OOO";
-                                return true;
-                            }
-                        }
-                    }
-                }
-
                 if (yvec <= 1 && xvec <= 1)
                 {
                     return true;
                 }
+                return castle(originX, originY, destinationX, destinationY, white);
             }
             else if (id == "P")
             {
@@ -153,7 +122,7 @@ namespace ChessGame.Util
                 }
                 int xdist = Math.Abs(destinationY - originY);
                 int ydist = Math.Abs(destinationX - originX);
-                if (((white && originX == 1) || (!white && originX == 6)) && ydist == 2)
+                if (((white && originX == 1) || (!white && originX == 6)) && ydist == 2 && xdist == 0)
                 {
                     return !isFigureBetween(originX, originY, destinationX, destinationY) && !hasFigure(destinationY, destinationX);
                 }
@@ -351,6 +320,52 @@ namespace ChessGame.Util
                     if (isValidMoveInternal(obj.id, y, x, fieldY, fieldX, !white))
                     {
                         return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool castle(int originX, int originY, int destinationX, int destinationY, bool white)
+        {
+            int yvec = Math.Abs(originY - destinationY);
+            int xvec = Math.Abs(originX - destinationX);
+            // OO
+            if (yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 6)
+            {
+                if (hasFigure(7, destinationX, true, true, !white, "T"))
+                {
+                    if (!isFieldAttacked(destinationY - 1, destinationX, white) && !isFieldAttacked(destinationY - 2, destinationX, white))
+                    {
+                        if (!isFigureBetween(originX, originY, destinationX, destinationY))
+                        {
+                            ChessPieceObject obj = getFigure(destinationY + 1, destinationX);
+                            int x = 2 * (destinationX - 3) - 1;
+                            int z = 3;
+                            obj.moveTo(new Vector3(x, 1, z));
+                            game.currentCoord = "OO";
+                            return true;
+                        }
+                    }
+                }
+            }
+            // OOO
+            if (yvec == 2 && (destinationX == 0 || destinationX == 7) && destinationY == 2)
+            {
+                if (hasFigure(0, destinationX, true, true, !white, "T"))
+                {
+                    if (!isFieldAttacked(destinationY + 1, destinationX, white) && !isFieldAttacked(destinationY - 1, destinationX, white))
+                    {
+                        if (!isFigureBetween(originX, originY, destinationX, destinationY) && !hasFigure(1, destinationX))
+                        {
+                            ChessPieceObject obj = getFigure(0, destinationX);
+                            int x = 2 * (destinationX - 3) - 1;
+                            int z = -1;
+                            obj.moveTo(new Vector3(x, 1, z));
+                            game.currentCoord = "OOO";
+                            return true;
+                        }
                     }
                 }
             }
