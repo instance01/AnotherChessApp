@@ -34,6 +34,7 @@ namespace ChessGame
 
         public List<BoardTileObject> boardTiles;
         public List<ChessPieceObject> chessPieces;
+        public List<EnvironmentBlock> envBlocks;
 
         Boolean debug = false;
 
@@ -64,6 +65,7 @@ namespace ChessGame
             util = new GameUtil(this);
             boardTiles = new List<BoardTileObject>();
             chessPieces = new List<ChessPieceObject>();
+            envBlocks = new List<EnvironmentBlock>();
             this.IsMouseVisible = true;
             base.Initialize();
         }
@@ -74,6 +76,9 @@ namespace ChessGame
 
             content.loadContent();
 
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
             viewMatrix = Matrix.CreateLookAt(camera.cameraPosition, Vector3.Zero, Vector3.UnitY);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphics.PreferredBackBufferWidth / (float) graphics.PreferredBackBufferHeight, 1, 200);
 
@@ -91,6 +96,9 @@ namespace ChessGame
                     }
                 }
             }
+
+            // TODO test
+            util.CreateEnvironmentBlock(new Vector3(-9, 0, -9));
 
             util.CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, -7), "T");
             util.CreateChessPiece(true, content.HorseW1, new Vector3(-7, 1, -5), "H");
@@ -236,6 +244,11 @@ namespace ChessGame
             scenes.mainMenuScene.mouseHover(currentMouseState.Position.X, currentMouseState.Position.Y, click);
             previousMouseState = currentMouseState;
 
+            foreach(EnvironmentBlock envBlock in envBlocks)
+            {
+                envBlock.update();
+            }
+
             base.Update(gameTime);
         }
 
@@ -325,7 +338,7 @@ namespace ChessGame
 
         private void newEvent(object sender, Wrapper.NewEventArgs e)
         {
-            Console.WriteLine(e.Line);
+            // Console.WriteLine(e.Line);
         }
 
     }

@@ -89,5 +89,6 @@ namespace ChessGame.GameObjects
             this.position = position;
             worldMatrix = Matrix.CreateTranslation(position);
         }
+
     }
 }

@@ -15,10 +15,12 @@ namespace ChessGame
         public Texture2D whiteMatteTexture, blackMatteTexture;
         public Texture2D buttonHuman_light, buttonHuman_dark, buttonAI_light, buttonAI_dark, buttonStart_dark, buttonStart_light, select_ai, buttonSelectWhite_dark, buttonSelectWhite_light, buttonSelectBlack_dark, buttonSelectBlack_light;
         public Texture2D transparentRectangle;
+        public Texture2D darkGrayTexture;
 
         public Model whiteTile;
         public Model blackTile;
         public Model TowerW, HorseW1, HorseW2, BishopW, QueenW, KingW, PawnW, TowerB, HorseB1, HorseB2, BishopB, QueenB, KingB, PawnB;
+        public Model envBlock;
         public SpriteFont font; 
 
         public GameContent(ChessGame game)
@@ -41,11 +43,13 @@ namespace ChessGame
             buttonSelectWhite_light = game.Content.Load<Texture2D>("Textures/buttonSelectWhite_light");
             buttonSelectBlack_dark = game.Content.Load<Texture2D>("Textures/buttonSelectBlack_dark");
             buttonSelectBlack_light = game.Content.Load<Texture2D>("Textures/buttonSelectBlack_light");
+            darkGrayTexture = game.Content.Load<Texture2D>("Textures/dark-gray-texture");
             transparentRectangle = new Texture2D(game.GraphicsDevice, 1, 1);
             transparentRectangle.SetData(new[] { Color.FromNonPremultiplied(0, 0, 0, 190)});
 
             whiteTile = game.Content.Load<Model>("whiteTile");
             blackTile = game.Content.Load<Model>("blackTile");
+            envBlock = game.Content.Load<Model>("env_block");
             TowerW = game.Content.Load<Model>("TowerW_bauhaus");
             HorseW1 = game.Content.Load<Model>("HorseW1_bauhaus");
             HorseW2 = game.Content.Load<Model>("HorseW2_bauhaus");

@@ -21,6 +21,11 @@ namespace ChessGame.Scenes
                 obj.draw();
             }
 
+            foreach(EnvironmentBlock obj in game.envBlocks)
+            {
+                obj.draw();
+            }
+
             for (int i = 0; i < game.chessPieces.Count; i++)
             {
                 if (i < game.chessPieces.Count)

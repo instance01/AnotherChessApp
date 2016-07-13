@@ -31,6 +31,13 @@ namespace ChessGame.Util
             return obj;
         }
 
+        public EnvironmentBlock CreateEnvironmentBlock(Vector3 position)
+        {
+            EnvironmentBlock obj = (EnvironmentBlock)new EnvironmentBlock(game, game.content.envBlock, position, UpdateBoundingBox(game.content.envBlock, Matrix.CreateTranslation(position)), game.content.darkGrayTexture).init();
+            game.envBlocks.Add(obj);
+            return obj;
+        }
+
         public Ray FindWhereClicked(MouseState ms)
         {
             Vector3 nearScreenPoint = new Vector3(ms.X, ms.Y, 0);

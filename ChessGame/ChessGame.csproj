@@ -38,16 +38,19 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Animation.cs" />
+    <Compile Include="Animations\Animation.cs" />
+    <Compile Include="Animations\AnimationPercentage.cs" />
     <Compile Include="GameCamera.cs" />
     <Compile Include="GameContent.cs" />
     <Compile Include="GameObjects\BoardTileObject.cs" />
     <Compile Include="GameObjects\ChessPieceObject.cs" />
     <Compile Include="ChessGame.cs" />
+    <Compile Include="GameObjects\EnvironmentBlock.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameScenes.cs" />
     <Compile Include="Gui\GuiButton.cs" />
     <Compile Include="Gui\GuiObject.cs" />
+    <Compile Include="KeyFrame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\SetupVsAI.cs" />
