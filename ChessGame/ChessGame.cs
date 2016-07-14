@@ -49,6 +49,8 @@ namespace ChessGame
         public ChessPieceObject kingW;
         public ChessPieceObject kingB;
 
+        public Random r = new Random();
+
         public ChessGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -97,8 +99,38 @@ namespace ChessGame
                 }
             }
 
-            // TODO test
-            util.CreateEnvironmentBlock(new Vector3(-9, 0, -9));
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    util.CreateEnvironmentBlock(new Vector3(i * 2 - 11, 0, j * 2 - 11));
+                }
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    util.CreateEnvironmentBlock(new Vector3(i * 2 + 9, 0, j * 2 - 11));
+                }
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    util.CreateEnvironmentBlock(new Vector3(i * 2 - 7, 0, j * 2 - 11));
+                }
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    util.CreateEnvironmentBlock(new Vector3(i * 2 - 7, 0, j * 2 + 9));
+                }
+            }
+
 
             util.CreateChessPiece(true, content.TowerW, new Vector3(-7, 1, -7), "T");
             util.CreateChessPiece(true, content.HorseW1, new Vector3(-7, 1, -5), "H");
